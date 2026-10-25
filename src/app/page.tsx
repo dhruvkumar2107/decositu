@@ -65,15 +65,7 @@ export default async function HomePage() {
           fill
           priority
           sizes="100vw"
-          className="hidden object-cover object-center md:block"
-        />
-        <Image
-          src="/images/hero-mobile.jpg"
-          alt="A softly styled bedroom in warm natural tones"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-[52%_45%] md:hidden"
+          className="object-cover object-[60%_center] md:object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-charcoal/60 via-charcoal/18 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/65 via-transparent to-charcoal/10" />
@@ -126,6 +118,47 @@ export default async function HomePage() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Visual Shop by Category Quick-Rail */}
+      <section className="border-b border-line bg-paper/60 py-8 sm:py-10">
+        <div className="container-luxe">
+          <div className="flex items-center justify-between pb-4">
+            <h2 className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-ink">
+              Shop by category
+            </h2>
+            <Link
+              href="/collections/bestsellers"
+              className="text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-muted transition-colors hover:text-olive"
+            >
+              All collections &rarr;
+            </Link>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-2 pt-1 hide-scrollbar sm:gap-6 lg:grid lg:grid-cols-8 lg:overflow-visible">
+            {categories.map((category) => (
+              <Link
+                key={category.id}
+                href={`/collections/${category.slug}`}
+                className="group flex w-[82px] shrink-0 flex-col items-center text-center sm:w-[94px] lg:w-auto"
+              >
+                <div className="relative aspect-square w-full overflow-hidden rounded-full border border-line bg-cream p-1 transition-all duration-300 group-hover:border-olive group-hover:shadow-md">
+                  <div className="relative h-full w-full overflow-hidden rounded-full">
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      fill
+                      sizes="96px"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
+                </div>
+                <span className="mt-2 text-[0.68rem] font-medium leading-tight text-ink transition-colors group-hover:text-olive">
+                  {category.name.split(" ")[0]}
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 

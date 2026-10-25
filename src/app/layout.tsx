@@ -9,7 +9,7 @@ import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import { getCurrentUser } from "@/lib/auth";
 import { getCategories } from "@/lib/products";
-import { getSettings, shippingConfig } from "@/lib/settings";
+import { getSettings, isDemoMode, shippingConfig } from "@/lib/settings";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
@@ -96,7 +96,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             returnWindow={Number(settings.returnWindow) || 7}
           />
           <main id="main-content">{children}</main>
-          <Footer categories={footerCategories} settings={settings} />
+          <Footer categories={footerCategories} settings={settings} demoMode={isDemoMode()} />
           <Toaster
             position="bottom-right"
             toastOptions={{

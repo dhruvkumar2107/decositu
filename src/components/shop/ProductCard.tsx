@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, Plus } from "lucide-react";
@@ -17,7 +18,9 @@ export function ProductCard({
   priority?: boolean;
 }) {
   const { addItem, toggleWishlist, isWishlisted, isReady } = useStore();
+  const [isHovered, setIsHovered] = useState(false);
   const saved = isReady && isWishlisted(product.id);
+  const hasSecondImage = Boolean(product.hoverImage && product.hoverImage !== product.image);
 
   function handleAdd() {
     if (!product.defaultVariant || !product.inStock) return;
@@ -50,7 +53,10 @@ export function ProductCard({
   }
 
   return (
-    <article className="group">
+    <article
+      className="group"
+      onMouseEnter={() => hasSecondImage && setIsHovered(true)}
+    >
       <div className="relative aspect-[4/5] overflow-hidden bg-cream">
         <Link href={`/products/${product.slug}`} aria-label={product.name} className="block h-full">
           <Image
@@ -59,15 +65,20 @@ export function ProductCard({
             fill
             priority={priority}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-all duration-700 ease-out group-hover:scale-[1.025] group-hover:opacity-0"
+            className={cn(
+              "object-cover transition-all duration-700 ease-out group-hover:scale-[1.025]",
+              hasSecondImage && isHovered && "group-hover:opacity-0",
+            )}
           />
-          <Image
-            src={product.hoverImage}
-            alt=""
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover opacity-0 transition-all duration-700 ease-out group-hover:scale-[1.025] group-hover:opacity-100"
-          />
+          {hasSecondImage && isHovered && (
+            <Image
+              src={product.hoverImage}
+              alt=""
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover opacity-0 transition-all duration-700 ease-out group-hover:scale-[1.025] group-hover:opacity-100"
+            />
+          )}
         </Link>
 
         <div className="pointer-events-none absolute left-3 top-3 flex flex-col items-start gap-1.5">

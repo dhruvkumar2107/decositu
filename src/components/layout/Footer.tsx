@@ -12,9 +12,11 @@ type FooterCategory = {
 export function Footer({
   categories,
   settings,
+  demoMode = true,
 }: {
   categories: FooterCategory[];
   settings: Record<string, string>;
+  demoMode?: boolean;
 }) {
   const year = new Date().getFullYear();
 
@@ -121,16 +123,20 @@ export function Footer({
           </div>
         </div>
 
-        <div className="border-b border-ivory/12 py-5">
-          <p className="text-center text-[0.68rem] leading-5 text-ivory/70">
-            {settings.demoNote}
-          </p>
-        </div>
+        {demoMode && (
+          <div className="border-b border-ivory/12 py-5">
+            <p className="text-center text-[0.68rem] leading-5 text-ivory/70">
+              {settings.demoNote}
+            </p>
+          </div>
+        )}
 
         <div className="flex flex-col gap-4 py-6 text-[0.68rem] text-ivory/70 sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} Decoritu. All rights reserved.</p>
           <p className="max-w-xl leading-5">
-            Photography sourced from Unsplash under the Unsplash License. Product catalogue shown for preview.
+            {demoMode
+              ? "Photography sourced from Unsplash under the Unsplash License. Product catalogue shown for preview."
+              : "Handcrafted luxury home furnishings. Thoughtfully delivered to homes across India."}
           </p>
           <p className="tracking-[0.12em]">UPI · Cards · Net banking · COD</p>
         </div>
