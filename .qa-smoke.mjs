@@ -13,7 +13,7 @@ const browser = await chromium.launch({
   headless: true,
 });
 
-const results = { pages: [], consoleErrors: [], failedRequests: [], brokenImages: [], overflow: [], axe: [], links: [] };
+const results = { pages: [], consoleErrors: [], badResponses: [], failedRequests: [], brokenImages: [], overflow: [], axe: [], links: [] };
 const internalLinks = new Set();
 
 async function settle(page) {
@@ -62,12 +62,16 @@ async function visit(viewport, label, path, { screenshot = false, axe = false } 
   const page = await context.newPage();
   const consoleErrors = [];
   const failed = [];
+  const badResponses = [];
   page.on("pageerror", (error) => consoleErrors.push(`pageerror: ${error.message}`));
   page.on("console", (message) => {
     if (message.type() === "error") consoleErrors.push(`console: ${message.text()}`);
   });
   page.on("requestfailed", (request) => {
     if (!request.url().includes("favicon")) failed.push(`${request.url()} :: ${request.failure()?.errorText}`);
+  });
+  page.on("response", (response) => {
+    if (response.status() >= 400) badResponses.push(`${response.status()} ${response.url()}`);
   });
   const response = await page.goto(base + path, { waitUntil: "domcontentloaded", timeout: 45000 });
   await settle(page);
@@ -96,9 +100,10 @@ async function visit(viewport, label, path, { screenshot = false, axe = false } 
     const file = `${outDir}/${label}-${path.replaceAll("/", "_") || "home"}.png`;
     await page.screenshot({ path: file, fullPage: false });
   }
-  results.pages.push({ label, path, status, title, consoleErrors, failed });
-  if (consoleErrors.length) results.consoleErrors.push({ label, consoleErrors });
-  if (failed.length) results.failedRequests.push({ label, failed });
+  results.pages.push({ label, path, status, title, consoleErrors, badResponses, failed });
+  if (consoleErrors.length) results.consoleErrors.push({ label: `${label} ${path}`, consoleErrors });
+  if (badResponses.length) results.badResponses.push({ label: `${label} ${path}`, badResponses });
+  if (failed.length) results.failedRequests.push({ label: `${label} ${path}`, failed });
   await context.close();
 }
 
@@ -160,7 +165,10 @@ console.log(JSON.stringify({
   brokenImages: results.brokenImages,
   overflow: results.overflow,
   consoleErrors: results.consoleErrors,
-  failedRequests: results.failedRequests,
+  badResponses: results.badResponses,
+  failedRequests: results.failedRequests
+    .map((entry) => ({ ...entry, failed: entry.failed.filter((f) => !f.includes("_rsc=") && !f.includes("ERR_ABORTED")) }))
+    .filter((entry) => entry.failed.length),
   axeViolationGroups: results.axe.map((a) => ({ label: a.label, ids: a.violations.map((v) => `${v.id}:${v.impact}:${v.nodes.length}`) })),
   brokenLinks: linkFails,
   linksChecked: results.links.length,
