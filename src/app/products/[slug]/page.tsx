@@ -16,6 +16,7 @@ import { ReviewSection } from "@/components/product/ReviewSection";
 import { RecentlyViewed } from "@/components/product/RecentlyViewed";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 
 export const revalidate = 60;
 
@@ -143,13 +144,11 @@ export default async function ProductPage({
 
       <section className="container-luxe pb-16 pt-6 md:pb-24 md:pt-8">
         <nav className="flex flex-wrap items-center gap-2 text-[0.62rem] uppercase tracking-[0.12em] text-muted" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-ink">Home</Link>
-          <ChevronRight size={11} />
-          <Link href={`/collections/${product.categorySlug}`} className="hover:text-ink">
-            {product.categoryName}
-          </Link>
-          <ChevronRight size={11} />
-          <span className="text-ink">{product.name}</span>
+          <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: product.categoryName, href: `/collections/${product.categorySlug}` },
+            { label: product.name, href: "/", current: true },
+          ]} />
         </nav>
 
         <div className="mt-6 grid gap-10 lg:mt-10 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12 xl:gap-20">

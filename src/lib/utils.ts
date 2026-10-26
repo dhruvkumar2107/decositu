@@ -106,3 +106,7 @@ export const colorSwatches: Record<string, string> = {
 export function swatchColor(color: string) {
   return colorSwatches[color.toLowerCase()] ?? "#b7ad9e";
 }
+
+export function bulkDiscount(subtotal: number, threshold: number, discount: number) {
+  return subtotal >= threshold ? discount : 0;
+}

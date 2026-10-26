@@ -28,6 +28,10 @@ export function calculateSubtotal(items: PricingLine[]) {
   return items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 }
 
+export function bulkDiscount(subtotal: number, threshold: number, discount: number) {
+  return subtotal >= threshold ? discount : 0;
+}
+
 export function couponDiscount(coupon: CouponLike, subtotal: number, now = new Date()) {
   if (!coupon.active) return { discount: 0, error: "This coupon is no longer active." };
   if (coupon.startsAt && coupon.startsAt > now) {
@@ -60,6 +64,7 @@ export function calculateTotals(
   items: PricingLine[],
   options: {
     coupon?: CouponLike | null;
+    bulkDiscount?: { threshold: number; discount: number };
     shippingThreshold: number;
     shippingFee: number;
     taxRate?: number;
@@ -68,7 +73,10 @@ export function calculateTotals(
 ): Totals {
   const subtotal = calculateSubtotal(items);
   const couponResult = options.coupon ? couponDiscount(options.coupon, subtotal, now) : { discount: 0, error: null };
-  const discount = couponResult.discount;
+  const bulkDiscountResult = options.bulkDiscount
+    ? bulkDiscount(subtotal, options.bulkDiscount.threshold, options.bulkDiscount.discount)
+    : 0;
+  const discount = couponResult.discount + bulkDiscountResult;
   const shipping = subtotal >= options.shippingThreshold ? 0 : options.shippingFee;
   const taxable = Math.max(subtotal - discount, 0);
   const taxRate = options.taxRate ?? 0;

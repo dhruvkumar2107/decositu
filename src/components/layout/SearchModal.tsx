@@ -7,12 +7,14 @@ import { ArrowRight, Search, X } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import type { ProductCardData } from "@/lib/products";
 
-const suggestions = [
+const collectionSuggestions = [
   { label: "Bedsheets", href: "/collections/bedding" },
   { label: "Curtains", href: "/collections/curtains" },
   { label: "Dohars", href: "/collections/dohars" },
   { label: "Cushions", href: "/collections/cushions" },
   { label: "Rugs", href: "/collections/rugs" },
+  { label: "Home decor", href: "/collections/home-decor-2025" },
+  { label: "Bags", href: "/collections/bags" },
 ];
 
 export function SearchModal({
@@ -24,6 +26,7 @@ export function SearchModal({
 }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<ProductCardData[]>([]);
+  const [suggestions, setSuggestions] = useState<(typeof collectionSuggestions)[0][]>([]);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -51,6 +54,7 @@ export function SearchModal({
     if (!open) return;
     const trimmed = query.trim();
     if (trimmed.length < 2) {
+      setSuggestions([]);
       setResults([]);
       setLoading(false);
       return;
@@ -60,14 +64,18 @@ export function SearchModal({
     const timeout = window.setTimeout(async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/products?q=${encodeURIComponent(trimmed)}&limit=6`, {
+        const response = await fetch(`/api/products?q=${encodeURIComponent(
+          trimmed,
+        )}&limit=6`, {
           signal: controller.signal,
         });
         if (!response.ok) throw new Error("Search failed");
         const data = (await response.json()) as { products: ProductCardData[] };
         setResults(data.products);
+        setSuggestions([]);
       } catch (error) {
         if ((error as Error).name !== "AbortError") setResults([]);
+        setSuggestions([]);
       } finally {
         setLoading(false);
       }
@@ -77,6 +85,18 @@ export function SearchModal({
       controller.abort();
       window.clearTimeout(timeout);
     };
+  }, [query, open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
+      setSuggestions(collectionSuggestions.filter((s) =>
+        s.label.toLowerCase().includes(trimmed.toLowerCase()),
+      ));
+      return;
+    }
+    setSuggestions([]);
   }, [query, open]);
 
   if (!open) return null;

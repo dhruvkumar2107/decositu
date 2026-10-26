@@ -7,6 +7,7 @@ import { getCollection } from "@/lib/products";
 import { getSettings, shippingConfig } from "@/lib/settings";
 import { formatPrice } from "@/lib/utils";
 import { CatalogClient } from "@/components/shop/CatalogClient";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 
 export const revalidate = 60;
 
@@ -46,13 +47,11 @@ export default async function CollectionPage({
       <section className="border-b border-line bg-paper">
         <div className="container-luxe py-10 md:py-14">
           <nav className="flex flex-wrap items-center gap-2 text-[0.63rem] uppercase tracking-[0.12em] text-muted" aria-label="Breadcrumb">
-            <Link href="/" className="transition-colors hover:text-ink">
-              Home
-            </Link>
-            <ChevronRight size={11} />
-            <span>{collection.isCategory ? "Collections" : "The edit"}</span>
-            <ChevronRight size={11} />
-            <span className="text-ink">{collection.title}</span>
+            <Breadcrumb items={[
+              { label: "Home", href: "/" },
+              { label: collection.isCategory ? "Collections" : "The edit", href: collection.isCategory ? "/collections" : "/" },
+              { label: collection.title, href: `/collections/${collection.slug}`, current: true },
+            ]} />
           </nav>
 
           <div className="mt-8 grid items-end gap-8 lg:grid-cols-[1.25fr_0.75fr] lg:gap-16">

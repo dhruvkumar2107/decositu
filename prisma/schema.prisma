@@ -116,20 +116,23 @@ model Product {
 }
 
 model ProductVariant {
-  id             String      @id @default(cuid())
-  productId      String
-  product        Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  sku            String      @unique
-  size           String
-  color          String
-  price          Int
-  compareAtPrice Int?
-  stock          Int         @default(0)
-  image          String?
-  active         Boolean     @default(true)
-  orderItems     OrderItem[]
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id                String      @id @default(cuid())
+  productId         String
+  product           Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku               String      @unique
+  size              String
+  color             String
+  price             Int
+  compareAtPrice    Int?
+  stock             Int         @default(0)
+  image             String?
+  active            Boolean     @default(true)
+  panelQuantity     String?     // e.g. "1", "2", "3" panels
+  hangingPattern    String?     // e.g. "eyelets", "rod-pocket", "track"
+  liningType        String?     // e.g. "standard", "blackout", "thermal"
+  orderItems        OrderItem[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 
   @@unique([productId, size, color])
   @@index([productId])

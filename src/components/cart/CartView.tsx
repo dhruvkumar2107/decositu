@@ -4,7 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Minus, Plus, ShieldCheck, ShoppingBag, Trash2, Truck } from "lucide-react";
 import { useStore } from "@/components/providers/StoreProvider";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, bulkDiscount } from "@/lib/utils";
+
+const BULK_DISCOUNT_THRESHOLD = 299900;
+const BULK_DISCOUNT_AMOUNT = 20000;
 
 export function CartView({
   shippingThreshold,
@@ -58,6 +61,7 @@ export function CartView({
   const remaining = Math.max(shippingThreshold - subtotal, 0);
   const progress = Math.min((subtotal / shippingThreshold) * 100, 100);
   const shipping = subtotal >= shippingThreshold ? 0 : shippingFee;
+  const bulkDiscountAmount = bulkDiscount(subtotal, BULK_DISCOUNT_THRESHOLD, BULK_DISCOUNT_AMOUNT);
 
   return (
     <div className="container-luxe py-12 md:py-20">
@@ -72,16 +76,21 @@ export function CartView({
       </div>
 
       <div className="mt-8 border border-line bg-paper p-4 sm:p-5">
-        <div className="flex items-center gap-3 text-xs">
+<div className="flex items-center gap-3 text-xs">
           <Truck size={16} className="shrink-0 text-olive" />
           {remaining > 0 ? (
             <p>
               Add <span className="font-semibold">{formatPrice(remaining)}</span> for complimentary shipping.
             </p>
           ) : (
-            <p>You&apos;ve unlocked complimentary shipping.</p>
+            <p>You've unlocked complimentary shipping.</p>
           )}
         </div>
+        {bulkDiscountAmount > 0 && (
+          <div className="mt-3 text-right text-xs text-muted">
+            Save <span className="font-semibold">{formatPrice(BULK_DISCOUNT_AMOUNT)}</span> on orders over {formatPrice(BULK_DISCOUNT_THRESHOLD)}
+          </div>
+        )}
         <div className="mt-3 h-1 overflow-hidden bg-line">
           <div className="h-full bg-olive transition-all duration-500" style={{ width: `${progress}%` }} />
         </div>

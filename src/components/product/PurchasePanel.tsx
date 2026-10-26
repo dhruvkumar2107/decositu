@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Check,
@@ -20,7 +19,8 @@ import type { ProductDetailData } from "@/lib/products";
 import { useStore } from "@/components/providers/StoreProvider";
 import { Price } from "@/components/ui/Price";
 import { Stars } from "@/components/ui/Stars";
-import { cn, formatPrice, swatchColor } from "@/lib/utils";
+import { cn, swatchColor } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 
 export function PurchasePanel({
   product,
@@ -40,6 +40,9 @@ export function PurchasePanel({
   const [color, setColor] = useState(initial?.color ?? "");
   const [quantity, setQuantity] = useState(1);
   const [shared, setShared] = useState(false);
+  const [panelQuantity, setPanelQuantity] = useState(initial?.panelQuantity ?? "1");
+  const [hangingPattern, setHangingPattern] = useState(initial?.hangingPattern ?? "");
+  const [liningType, setLiningType] = useState(initial?.liningType ?? "");
 
   const sizes = useMemo(() => [...new Set(product.variants.map((variant) => variant.size))], [product.variants]);
   const colors = useMemo(() => [...new Set(product.variants.map((variant) => variant.color))], [product.variants]);
@@ -52,24 +55,50 @@ export function PurchasePanel({
     setQuantity((current) => Math.min(Math.max(current, 1), selectedVariant?.stock || 1));
   }, [selectedVariant?.id, selectedVariant?.stock]);
 
+  useEffect(() => {
+    if (selectedVariant) {
+      setPanelQuantity(selectedVariant.panelQuantity ?? "1");
+      setHangingPattern(selectedVariant.hangingPattern ?? "");
+      setLiningType(selectedVariant.liningType ?? "");
+    }
+  }, [selectedVariant?.id]);
+
   function chooseSize(nextSize: string) {
     const candidate =
-      product.variants.find((variant) => variant.size === nextSize && variant.color === color && variant.stock > 0) ??
-      product.variants.find((variant) => variant.size === nextSize && variant.stock > 0) ??
+      product.variants.find(
+        (variant) => variant.size === nextSize && variant.color === color && variant.stock > 0,
+      ) ??
+      product.variants.find(
+        (variant) => variant.size === nextSize && variant.stock > 0,
+      ) ??
       product.variants.find((variant) => variant.size === nextSize);
     setSize(nextSize);
     if (candidate) setColor(candidate.color);
     setQuantity(1);
+    if (candidate) {
+      setPanelQuantity(candidate.panelQuantity ?? "1");
+      setHangingPattern(candidate.hangingPattern ?? "");
+      setLiningType(candidate.liningType ?? "");
+    }
   }
 
   function chooseColor(nextColor: string) {
     const candidate =
-      product.variants.find((variant) => variant.color === nextColor && variant.size === size && variant.stock > 0) ??
-      product.variants.find((variant) => variant.color === nextColor && variant.stock > 0) ??
+      product.variants.find(
+        (variant) => variant.color === nextColor && variant.size === size && variant.stock > 0,
+      ) ??
+      product.variants.find(
+        (variant) => variant.color === nextColor && variant.stock > 0,
+      ) ??
       product.variants.find((variant) => variant.color === nextColor);
     setColor(nextColor);
     if (candidate) setSize(candidate.size);
     setQuantity(1);
+    if (candidate) {
+      setPanelQuantity(candidate.panelQuantity ?? "1");
+      setHangingPattern(candidate.hangingPattern ?? "");
+      setLiningType(candidate.liningType ?? "");
+    }
   }
 
   function cartItem() {
@@ -80,7 +109,7 @@ export function PurchasePanel({
       name: product.name,
       image: selectedVariant.image,
       variantId: selectedVariant.id,
-      variantLabel: `${selectedVariant.size} / ${selectedVariant.color}`,
+      variantLabel: `${selectedVariant.size} / ${selectedVariant.color}${selectedVariant.panelQuantity ? ` · ${selectedVariant.panelQuantity} panel${Number(selectedVariant.panelQuantity) > 1 ? "s" : ""}` : ""}${selectedVariant.hangingPattern ? ` · ${selectedVariant.hangingPattern}` : ""}${selectedVariant.liningType ? ` · ${selectedVariant.liningType} lining` : ""}`,
       size: selectedVariant.size,
       color: selectedVariant.color,
       sku: selectedVariant.sku,
@@ -139,12 +168,6 @@ export function PurchasePanel({
 
   return (
     <div className="lg:sticky lg:top-[100px]">
-      <Link
-        href={`/collections/${product.categorySlug}`}
-        className="text-[0.62rem] font-semibold uppercase tracking-[0.17em] text-muted transition-colors hover:text-olive"
-      >
-        {product.categoryName}
-      </Link>
       <h1 className="display mt-3 text-[2.7rem] leading-[0.95] sm:text-[3.4rem]">{product.name}</h1>
 
       <div className="mt-4 flex flex-wrap items-center gap-4">
@@ -157,14 +180,15 @@ export function PurchasePanel({
             Be the first to review
           </a>
         )}
-        {product.isNew && (
-          <span className="border border-olive/35 px-2 py-0.5 text-[0.57rem] font-semibold uppercase tracking-[0.12em] text-olive">
-            New arrival
-          </span>
-        )}
       </div>
 
-      <div className="mt-5 flex flex-wrap items-baseline gap-3">
+      {product.isNew && (
+        <span className="border border-olive/35 px-2 py-0.5 text-[0.57rem] font-semibold uppercase tracking-[0.12em] text-olive">
+          New arrival
+        </span>
+      )}
+
+      <div className="mt-4 flex flex-wrap items-baseline gap-3">
         <Price
           price={selectedVariant?.price ?? product.price}
           compareAtPrice={selectedVariant?.compareAtPrice ?? product.compareAtPrice}
@@ -186,7 +210,7 @@ export function PurchasePanel({
 
       <p className="mt-5 text-sm leading-7 text-muted">{product.description}</p>
 
-      <div className="mt-7 border-t border-line pt-6">
+      <div className="mt-6 border-t border-line pt-6">
         <div className="flex items-center justify-between">
           <p className="text-[0.66rem] font-semibold uppercase tracking-[0.14em]">Size</p>
           <span className="text-[0.64rem] text-muted">Select a size</span>
@@ -196,19 +220,20 @@ export function PurchasePanel({
             const available = product.variants.some(
               (variant) => variant.size === option && variant.stock > 0,
             );
+            const sizeClass = cn(
+              "border px-4 py-2.5 text-[0.72rem] transition-colors",
+              size === option
+                ? "border-charcoal bg-charcoal text-ivory"
+                : "border-line hover:border-charcoal",
+              !available && "text-muted line-through",
+            );
             return (
               <button
                 key={option}
                 type="button"
                 onClick={() => chooseSize(option)}
                 aria-pressed={size === option}
-                className={cn(
-                  "border px-4 py-2.5 text-[0.72rem] transition-colors",
-                  size === option
-                    ? "border-charcoal bg-charcoal text-ivory"
-                    : "border-line hover:border-charcoal",
-                  !available && "text-muted line-through",
-                )}
+                className={sizeClass}
               >
                 {option}
               </button>
@@ -227,19 +252,20 @@ export function PurchasePanel({
             const available = product.variants.some(
               (variant) => variant.color === option && variant.stock > 0,
             );
+            const colorClass = cn(
+              "flex items-center gap-2 border px-3 py-2 text-[0.68rem] transition-colors",
+              color === option
+                ? "border-charcoal bg-cream"
+                : "border-line hover:border-charcoal",
+              !available && "opacity-55",
+            );
             return (
               <button
                 key={option}
                 type="button"
                 onClick={() => chooseColor(option)}
                 aria-pressed={color === option}
-                className={cn(
-                  "flex items-center gap-2 border px-3 py-2 text-[0.68rem] transition-colors",
-                  color === option
-                    ? "border-charcoal bg-cream"
-                    : "border-line hover:border-charcoal",
-                  !available && "opacity-55",
-                )}
+                className={colorClass}
               >
                 <span
                   className="h-3.5 w-3.5 rounded-full border border-ink/15"
@@ -247,6 +273,114 @@ export function PurchasePanel({
                 />
                 {option}
                 {color === option && <Check size={11} />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <div className="flex items-center justify-between">
+          <p className="text-[0.66rem] font-semibold uppercase tracking-[0.14em]">Panel quantity</p>
+          <span className="text-[0.64rem] text-muted">Select number of panels</span>
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {["1", "2", "3"].map((panel) => {
+            const available = product.variants.some(
+              (variant) => variant.panelQuantity === panel && variant.stock > 0,
+            );
+            const panelClass = panelQuantity === panel
+              ? "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-charcoal bg-charcoal text-ivory"
+              : "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-line hover:border-charcoal";
+            const finalPanelClass = !available ? "opacity-55" : "";
+            return (
+              <button
+                key={panel}
+                type="button"
+                onClick={() => setPanelQuantity(panel)}
+                className={cn(
+                  panelQuantity === panel
+                    ? "border rounded-full px-3 py-2 text-[0.62rem] transition-colors"
+                    : "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-line hover:border-charcoal",
+                  !available && "opacity-55",
+                )}
+                aria-pressed={panelQuantity === panel}
+              >
+                {panel} panel
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <div className="flex items-center justify-between">
+          <p className="text-[0.66rem] font-semibold uppercase tracking-[0.14em]">Hanging pattern</p>
+          <span className="text-[0.64rem] text-muted">{hangingPattern || "Select hanging pattern"}</span>
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {["eyelets", "rod-pocket", "track"].map((pattern) => {
+            const available = product.variants.some(
+              (variant) => variant.hangingPattern === pattern && variant.stock > 0,
+            );
+            const patternClass = hangingPattern === pattern
+              ? "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-charcoal bg-charcoal text-ivory"
+              : "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-line hover:border-charcoal";
+            return (
+              <button
+                key={pattern}
+                type="button"
+                onClick={() => setHangingPattern(pattern)}
+                className={cn(
+                  hangingPattern === pattern
+                    ? "border rounded-full px-3 py-2 text-[0.62rem] transition-colors"
+                    : "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-line hover:border-charcoal",
+                  !available && "opacity-55",
+                )}
+                aria-pressed={hangingPattern === pattern}
+              >
+                {pattern === "eyelets"
+                  ? "Eyelets"
+                  : pattern === "rod-pocket"
+                  ? "Rod pocket"
+                  : "Track"}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <div className="flex items-center justify-between">
+          <p className="text-[0.66rem] font-semibold uppercase tracking-[0.14em]">Lining type</p>
+          <span className="text-[0.64rem] text-muted">{liningType || "Select lining type"}</span>
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {["standard", "blackout", "thermal"].map((lining) => {
+            const available = product.variants.some(
+              (variant) => variant.liningType === lining && variant.stock > 0,
+            );
+            const liningClass = liningType === lining
+              ? "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-charcoal bg-charcoal text-ivory"
+              : "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-line hover:border-charcoal";
+            return (
+              <button
+                key={lining}
+                type="button"
+                onClick={() => setLiningType(lining)}
+                className={cn(
+                  liningType === lining
+                    ? "border rounded-full px-3 py-2 text-[0.62rem] transition-colors"
+                    : "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-line hover:border-charcoal",
+                  !available && "opacity-55",
+                )}
+                aria-pressed={liningType === lining}
+              >
+                {lining === "standard"
+                  ? "Standard"
+                  : lining === "blackout"
+                  ? "Blackout"
+                  : "Thermal"}
               </button>
             );
           })}

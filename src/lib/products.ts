@@ -44,6 +44,9 @@ export type ProductCardData = {
     sku: string;
     stock: number;
     image: string;
+    panelQuantity: string | null;
+    hangingPattern: string | null;
+    liningType: string | null;
   } | null;
 };
 
@@ -78,6 +81,9 @@ export type ProductDetailData = {
     compareAtPrice: number | null;
     stock: number;
     image: string;
+    panelQuantity: string | null;
+    hangingPattern: string | null;
+    liningType: string | null;
   }[];
   reviews: {
     id: string;
@@ -104,7 +110,7 @@ export function mapProductCard(product: CardProduct): ProductCardData {
   const price = lowestVariant?.price ?? product.price;
   const compareAtPrice = lowestVariant?.compareAtPrice ?? product.compareAtPrice;
 
-  return {
+return {
     id: product.id,
     name: product.name,
     slug: product.slug,
@@ -133,6 +139,9 @@ export function mapProductCard(product: CardProduct): ProductCardData {
           sku: defaultVariant.sku,
           stock: defaultVariant.stock,
           image: defaultVariant.image ?? images[0] ?? "/images/bedding-01.jpg",
+          panelQuantity: defaultVariant.panelQuantity,
+          hangingPattern: defaultVariant.hangingPattern,
+          liningType: defaultVariant.liningType,
         }
       : null,
   };
@@ -267,6 +276,9 @@ export async function getProductBySlug(slug: string): Promise<ProductDetailData 
       compareAtPrice: variant.compareAtPrice,
       stock: variant.stock,
       image: variant.image ?? images[0] ?? "/images/bedding-01.jpg",
+      panelQuantity: variant.panelQuantity,
+      hangingPattern: variant.hangingPattern,
+      liningType: variant.liningType,
     })),
     reviews: product.reviews.map((review) => ({
       id: review.id,

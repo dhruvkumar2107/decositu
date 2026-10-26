@@ -5,6 +5,7 @@ import { searchProducts, getBestsellers } from "@/lib/products";
 import { CatalogClient } from "@/components/shop/CatalogClient";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
 
 export const metadata: Metadata = {
   title: "Search",
@@ -26,11 +27,10 @@ export default async function SearchPage({
     <>
       <section className="border-b border-line bg-paper">
         <div className="container-luxe py-12 md:py-16">
-          <nav className="text-[0.63rem] uppercase tracking-[0.12em] text-muted" aria-label="Breadcrumb">
-            <Link href="/" className="hover:text-ink">Home</Link>
-            <span className="mx-2">/</span>
-            <span className="text-ink">Search</span>
-          </nav>
+          <Breadcrumb items={[
+  { label: "Home", href: "/" },
+  { label: `Search for “${query}”`, href: `/search?q=${query}`, current: true },
+]} />
           <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-end">
             <div>
               <p className="eyebrow text-muted">Search the edit</p>
