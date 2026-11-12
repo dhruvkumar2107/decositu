@@ -230,7 +230,7 @@ export default async function TermsPage() {
             <>
               <p>
                 These terms are governed by the laws of India. Subject to applicable consumer law,
-                courts in Jaipur, Rajasthan have exclusive jurisdiction over disputes arising from use
+                courts in Vijayapura, Karnataka have exclusive jurisdiction over disputes arising from use
                 of the site or these terms.
               </p>
               <p>

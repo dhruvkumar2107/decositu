@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type CountdownProps = {
   targetDate: string;
@@ -9,6 +9,11 @@ type CountdownProps = {
 
 export function Countdown({ targetDate, onFinished }: CountdownProps) {
   const [remaining, setRemaining] = useState<number | null>(null);
+  const onFinishedRef = useRef(onFinished);
+
+  useEffect(() => {
+    onFinishedRef.current = onFinished;
+  }, [onFinished]);
 
   useEffect(() => {
     const target = new Date(targetDate).getTime();
@@ -19,7 +24,7 @@ export function Countdown({ targetDate, onFinished }: CountdownProps) {
       if (diff <= 0) {
         clearInterval(interval);
         setRemaining(0);
-        if (onFinished) onFinished();
+        onFinishedRef.current?.();
         return;
       }
 

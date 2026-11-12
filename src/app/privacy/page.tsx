@@ -26,7 +26,7 @@ export default async function PrivacyPage() {
             <>
               <p>
                 Decoritu (“Decoritu”, “we”, “us”) is a home décor and furnishings store based in
-                Jaipur, India. This policy applies to personal data collected through this website,
+                Vijayapura, Karnataka, India. This policy applies to personal data collected through this website,
                 our customer care channels and any related services.
               </p>
               <p>

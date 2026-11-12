@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Instagram, Mail, MapPin, Phone } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { NewsletterForm } from "@/components/layout/NewsletterForm";
+import { storeAddressText, storeInfo, storeMapUrl, telHref } from "@/lib/store-info";
 
 type FooterCategory = {
   id: string;
@@ -27,11 +28,11 @@ export function Footer({
           <div>
             <Logo light />
             <p className="mt-6 max-w-xs font-display text-3xl leading-[1.05] text-ivory/90">
-              Considered things for beautiful living.
+              {storeInfo.tagline}.
             </p>
             <p className="mt-5 max-w-xs text-sm leading-7 text-ivory/70">
-              A considered edit of bedding, curtains and objects for the home — chosen for texture,
-              warmth and the way they make a room feel.
+              Home interior furnishing solutions — {storeInfo.services.join(", ").toLowerCase()} —
+              chosen for texture, warmth and the way they make a room feel.
             </p>
             <div className="mt-8 flex items-center gap-3">
               <a
@@ -113,12 +114,27 @@ export function Footer({
               <p className="flex items-center gap-2.5">
                 <Mail size={13} /> {settings.supportEmail}
               </p>
-              <p className="flex items-center gap-2.5">
-                <Phone size={13} /> {settings.supportHours}
+              <p className="flex items-start gap-2.5">
+                <Phone size={13} className="mt-0.5 shrink-0" />
+                <span>
+                  {storeInfo.contactPerson} ·{" "}
+                  {storeInfo.phones.map((phone, index) => (
+                    <span key={phone}>
+                      {index > 0 && " / "}
+                      <a href={telHref(phone)} className="hover:text-ivory">
+                        {phone}
+                      </a>
+                    </span>
+                  ))}
+                </span>
               </p>
-              <p className="flex items-center gap-2.5">
-                <MapPin size={13} /> Jaipur, India
+              <p className="flex items-start gap-2.5">
+                <MapPin size={13} className="mt-0.5 shrink-0" />
+                <a href={storeMapUrl} target="_blank" rel="noreferrer" className="leading-5 hover:text-ivory">
+                  {storeAddressText}
+                </a>
               </p>
+              <p className="pl-[22px]">{settings.supportHours}</p>
             </div>
           </div>
         </div>

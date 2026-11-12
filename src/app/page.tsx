@@ -24,6 +24,7 @@ import { Price } from "@/components/ui/Price";
 import { Stars } from "@/components/ui/Stars";
 import { Reveal } from "@/components/ui/Reveal";
 import { NewsletterForm } from "@/components/layout/NewsletterForm";
+import { VisitStore } from "@/components/content/VisitStore";
 import { formatPrice } from "@/lib/utils";
 
 export const revalidate = 60;
@@ -669,6 +670,8 @@ export default async function HomePage() {
           </Reveal>
         </div>
       </section>
+
+      <VisitStore />
 
       <section className="bg-cream py-16 md:py-24">
         <div className="container-luxe grid items-stretch gap-0 bg-paper lg:grid-cols-2">

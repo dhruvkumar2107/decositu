@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Clock, Mail, MapPin, PackageSearch } from "lucide-react";
+import { Clock, Mail, MapPin, PackageSearch, Phone, User } from "lucide-react";
 import { ContentHeader } from "@/components/content/ContentHeader";
 import { ContactForm } from "@/components/content/ContactForm";
 import { getSettings } from "@/lib/settings";
+import { storeAddressText, storeInfo, storeMapUrl, telHref } from "@/lib/store-info";
 
 export const metadata: Metadata = {
   title: "Contact us",
@@ -36,6 +37,24 @@ export default async function ContactPage() {
             <p className="eyebrow text-muted">Reach us</p>
             <div className="mt-6 space-y-5">
               <div className="flex gap-3">
+                <User size={16} className="mt-0.5 shrink-0 text-olive" strokeWidth={1.5} />
+                <div>
+                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-muted">Contact person</p>
+                  <p className="mt-1 text-sm">{storeInfo.contactPerson}</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Phone size={16} className="mt-0.5 shrink-0 text-olive" strokeWidth={1.5} />
+                <div>
+                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-muted">Phone</p>
+                  {storeInfo.phones.map((phone) => (
+                    <a key={phone} href={telHref(phone)} className="mt-1 block text-sm hover:text-olive">
+                      {phone}
+                    </a>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-3">
                 <Mail size={16} className="mt-0.5 shrink-0 text-olive" strokeWidth={1.5} />
                 <div>
                   <p className="text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-muted">Email</p>
@@ -55,9 +74,14 @@ export default async function ContactPage() {
               <div className="flex gap-3">
                 <MapPin size={16} className="mt-0.5 shrink-0 text-olive" strokeWidth={1.5} />
                 <div>
-                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-muted">Studio</p>
-                  <p className="mt-1 text-sm">Jaipur, Rajasthan, India</p>
-                  <p className="text-[0.62rem] text-muted">No walk-in retail at present. Please write before visiting.</p>
+                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-muted">Store</p>
+                  <p className="mt-1 text-sm leading-6">{storeAddressText}</p>
+                  <p className="text-[0.62rem] text-muted">
+                    {storeInfo.tagline} — {storeInfo.services.join(", ").toLowerCase()}.{" "}
+                    <a href={storeMapUrl} target="_blank" rel="noreferrer" className="text-olive underline underline-offset-2">
+                      Get directions
+                    </a>
+                  </p>
                 </div>
               </div>
             </div>

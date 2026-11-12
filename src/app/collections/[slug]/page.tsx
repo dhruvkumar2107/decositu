@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronRight } from "lucide-react";
 import { getCollection } from "@/lib/products";
 import { getSettings, shippingConfig } from "@/lib/settings";
 import { formatPrice } from "@/lib/utils";

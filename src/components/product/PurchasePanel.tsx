@@ -61,6 +61,7 @@ export function PurchasePanel({
       setHangingPattern(selectedVariant.hangingPattern ?? "");
       setLiningType(selectedVariant.liningType ?? "");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only reset when the variant itself changes
   }, [selectedVariant?.id]);
 
   function chooseSize(nextSize: string) {
@@ -289,10 +290,6 @@ export function PurchasePanel({
             const available = product.variants.some(
               (variant) => variant.panelQuantity === panel && variant.stock > 0,
             );
-            const panelClass = panelQuantity === panel
-              ? "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-charcoal bg-charcoal text-ivory"
-              : "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-line hover:border-charcoal";
-            const finalPanelClass = !available ? "opacity-55" : "";
             return (
               <button
                 key={panel}
@@ -323,9 +320,6 @@ export function PurchasePanel({
             const available = product.variants.some(
               (variant) => variant.hangingPattern === pattern && variant.stock > 0,
             );
-            const patternClass = hangingPattern === pattern
-              ? "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-charcoal bg-charcoal text-ivory"
-              : "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-line hover:border-charcoal";
             return (
               <button
                 key={pattern}
@@ -360,9 +354,6 @@ export function PurchasePanel({
             const available = product.variants.some(
               (variant) => variant.liningType === lining && variant.stock > 0,
             );
-            const liningClass = liningType === lining
-              ? "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-charcoal bg-charcoal text-ivory"
-              : "border rounded-full px-3 py-2 text-[0.62rem] transition-colors border-line hover:border-charcoal";
             return (
               <button
                 key={lining}

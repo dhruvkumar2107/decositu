@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function ProductGallery({
@@ -27,22 +26,22 @@ export function ProductGallery({
     setOrigin(`${x}% 50%`);
   }
 
-  function handleKeyDown(event: React.KeyboardEvent) {
-    if (event.key === "ArrowLeft") {
-      setActive((active) => Math.max(0, active - 1));
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "ArrowLeft") {
+        setActive((index) => Math.max(0, index - 1));
+      }
+      if (event.key === "ArrowRight") {
+        setActive((index) => Math.min(total - 1, index + 1));
+      }
+      if (event.key === "Escape") {
+        setZooming(false);
+      }
     }
-    if (event.key === "ArrowRight") {
-      setActive((active) => Math.min(total - 1, active + 1));
-    }
-    if (event.key === "Escape") {
-      setZooming(false);
-    }
-  }
 
-useEffect(() => {
-    // @ts-ignore
-    document.body.onkeydown = (event: KeyboardEvent) => handleKeyDown(event);
-  }, []);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [total]);
 
   const current = gallery[active] ?? gallery[0];
 

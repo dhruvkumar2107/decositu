@@ -83,7 +83,7 @@ export function CartView({
               Add <span className="font-semibold">{formatPrice(remaining)}</span> for complimentary shipping.
             </p>
           ) : (
-            <p>You've unlocked complimentary shipping.</p>
+            <p>You&apos;ve unlocked complimentary shipping.</p>
           )}
         </div>
         {bulkDiscountAmount > 0 && (
