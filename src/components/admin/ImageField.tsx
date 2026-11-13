@@ -1,10 +1,9 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element -- admin previews must render any URL, including external ones */
-
 import { useId, useRef, useState } from "react";
 import { ImageIcon, Images, Link2, Loader2, RotateCcw, Upload, X } from "lucide-react";
 import { toast } from "sonner";
+import { AdminThumb } from "@/components/admin/AdminThumb";
 import { MediaPicker } from "@/components/admin/MediaPicker";
 import { MEDIA_ACCEPT_CLIENT } from "@/components/admin/media-constants";
 import { uploadImage } from "@/lib/upload-client";
@@ -75,9 +74,8 @@ export function ImageField({
           )}
         >
           {value && !broken ? (
-            <img
+            <AdminThumb
               src={value}
-              alt=""
               className={cn("h-full w-full", contain ? "object-contain p-1.5" : "object-cover")}
               onError={() => setBroken(true)}
             />

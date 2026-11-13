@@ -1,10 +1,9 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element -- admin previews */
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, Copy, Loader2, Pencil, Search, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
+import { AdminThumb } from "@/components/admin/AdminThumb";
 import { MEDIA_ACCEPT_CLIENT } from "@/components/admin/media-constants";
 import { builtinImages } from "@/lib/builtin-images";
 import {
@@ -161,7 +160,7 @@ export function MediaLibrary() {
             {visibleUploads.map((asset) => (
               <figure key={asset.id} className="border border-line bg-paper">
                 <div className="aspect-square overflow-hidden bg-cream">
-                  <img src={asset.url} alt={asset.filename} loading="lazy" className="h-full w-full object-cover" />
+                  <AdminThumb src={asset.url} alt={asset.filename} className="h-full w-full object-cover" />
                 </div>
                 <figcaption className="p-2.5">
                   {editing?.id === asset.id ? (
@@ -229,7 +228,7 @@ export function MediaLibrary() {
           {visibleBuiltins.map((url) => (
             <figure key={url} className="border border-line bg-paper">
               <div className="aspect-square overflow-hidden bg-cream">
-                <img src={url} alt={fileNameFromUrl(url)} loading="lazy" className="h-full w-full object-cover" />
+                <AdminThumb src={url} alt={fileNameFromUrl(url)} width={128} className="h-full w-full object-cover" />
               </div>
               <figcaption className="flex items-center gap-1 p-2">
                 <span className="min-w-0 flex-1 truncate text-[0.58rem]" title={fileNameFromUrl(url)}>{fileNameFromUrl(url)}</span>

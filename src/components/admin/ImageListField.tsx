@@ -1,10 +1,9 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element -- admin previews must render any URL, including external ones */
-
 import { useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Images, Link2, Loader2, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
+import { AdminThumb } from "@/components/admin/AdminThumb";
 import { MediaPicker } from "@/components/admin/MediaPicker";
 import { MEDIA_ACCEPT_CLIENT } from "@/components/admin/media-constants";
 import { uploadImage } from "@/lib/upload-client";
@@ -68,7 +67,7 @@ export function ImageListField({
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
         {images.map((src, index) => (
           <div key={src} className="group relative aspect-square overflow-hidden border border-line bg-cream">
-            <img src={src} alt="" className="h-full w-full object-cover" />
+            <AdminThumb src={src} className="h-full w-full object-cover" />
             {index === 0 && (
               <span className="absolute left-1 top-1 bg-charcoal px-1.5 py-0.5 text-[0.5rem] font-semibold uppercase tracking-[0.06em] text-ivory">
                 Primary

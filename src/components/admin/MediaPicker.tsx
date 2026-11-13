@@ -1,10 +1,9 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element -- admin previews must render any URL, including external ones */
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Check, Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
+import { AdminThumb } from "@/components/admin/AdminThumb";
 import { MEDIA_ACCEPT_CLIENT } from "@/components/admin/media-constants";
 import { builtinImages } from "@/lib/builtin-images";
 import { fileNameFromUrl, listMedia, uploadImage, type MediaAssetDTO } from "@/lib/upload-client";
@@ -182,7 +181,7 @@ function PickerGrid({
             )}
           >
             <span className="relative block aspect-square overflow-hidden bg-cream">
-              <img src={item.url} alt={item.name} loading="lazy" className="h-full w-full object-cover" />
+              <AdminThumb src={item.url} alt={item.name} width={128} className="h-full w-full object-cover" />
               {index >= 0 && (
                 <span className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-olive text-[0.6rem] text-paper">
                   {multiple ? index + 1 : <Check size={12} />}
