@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Clock, Mail, MapPin, PackageSearch, Phone, User } from "lucide-react";
+import { Clock, Mail, MapPin, MessageCircle, PackageSearch, Phone, User } from "lucide-react";
 import { ContentHeader } from "@/components/content/ContentHeader";
 import { ContactForm } from "@/components/content/ContactForm";
-import { getSettings } from "@/lib/settings";
-import { storeAddressText, storeInfo, storeMapUrl, telHref } from "@/lib/store-info";
+import { getSettings, siteImage } from "@/lib/settings";
+import { storeAddressText, storeInfo, storeMapUrl, telHref, whatsappHref } from "@/lib/store-info";
 
 export const metadata: Metadata = {
   title: "Contact us",
@@ -27,7 +27,7 @@ export default async function ContactPage() {
         eyebrow="Customer care"
         title="A real person, at the other end."
         description="Whether it is a question about a weave, an order in transit or styling a room, write to us. We read every message and reply with care."
-        image="/images/story-craft.jpg"
+        image={siteImage(settings, "img.pageContact")}
         imageAlt="Hands working with natural fabric in the Decoritu studio"
       />
 
@@ -52,6 +52,14 @@ export default async function ContactPage() {
                       {phone}
                     </a>
                   ))}
+                  <a
+                    href={whatsappHref("Hi Decoritu, I have a question.")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-[#1a8a4a] hover:underline"
+                  >
+                    <MessageCircle size={14} /> Chat on WhatsApp
+                  </a>
                 </div>
               </div>
               <div className="flex gap-3">

@@ -6,6 +6,8 @@ export const storeInfo = {
   services: ["Curtains", "Blinds", "Wallpapers", "Mattresses"],
   contactPerson: "Ravi Koshti",
   phones: ["+91 9986479525", "+91 8660675500"],
+  /** WhatsApp chat number in international format, digits only. */
+  whatsapp: "919986479525",
   address: {
     lines: ["Talikuti Building, S S Road", "Opp. Siddeshwar Kalabhavan"],
     city: "Vijayapura",
@@ -27,4 +29,9 @@ export const storeMapUrl = `https://www.google.com/maps/search/?api=1&query=${en
 
 export function telHref(phone: string) {
   return `tel:${phone.replace(/\s+/g, "")}`;
+}
+
+export function whatsappHref(message?: string) {
+  const base = `https://wa.me/${storeInfo.whatsapp}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }

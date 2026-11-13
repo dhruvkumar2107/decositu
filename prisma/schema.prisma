@@ -252,3 +252,17 @@ model ContactMessage {
   status    String   @default("NEW")
   createdAt DateTime @default(now())
 }
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  filename  String
+  mimeType  String
+  size      Int
+  width     Int?
+  height    Int?
+  alt       String   @default("")
+  data      Bytes
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

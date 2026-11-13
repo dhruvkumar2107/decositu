@@ -1,6 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { discountPercent, parseImages } from "@/lib/utils";
+import { getSiteImage } from "@/lib/settings";
 
 const cardInclude = {
   category: true,
@@ -325,7 +326,7 @@ export async function getCollection(slug: string): Promise<CollectionData | null
       title: "New Arrivals",
       slug,
       description: "The latest additions to the Decoritu edit, chosen for the season ahead.",
-      image: "/images/bedding-02.jpg",
+      image: await getSiteImage("img.collectionNew"),
       products: await getProductCards({
         where: { newArrival: true },
         orderBy: { createdAt: "desc" },
@@ -339,7 +340,7 @@ export async function getCollection(slug: string): Promise<CollectionData | null
       title: "Bestsellers",
       slug,
       description: "The pieces our customers return to, again and again.",
-      image: "/images/dohar-02.jpg",
+      image: await getSiteImage("img.collectionBestsellers"),
       products: await getProductCards({
         where: { bestseller: true },
         orderBy: { sortOrder: "asc" },
@@ -353,7 +354,7 @@ export async function getCollection(slug: string): Promise<CollectionData | null
       title: "The Quiet Sale",
       slug,
       description: "Considered pieces at a softer price. Limited quantities, no noise.",
-      image: "/images/curtains-03.jpg",
+      image: await getSiteImage("img.collectionSale"),
       products: await getProductCards({
         where: { compareAtPrice: { not: null } },
         orderBy: { updatedAt: "desc" },

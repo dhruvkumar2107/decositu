@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Minus, Plus } from "lucide-react";
 import { ContentHeader } from "@/components/content/ContentHeader";
-import { getSettings } from "@/lib/settings";
+import { getSettings, siteImage } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "FAQs",
@@ -108,7 +108,7 @@ export default async function FaqPage() {
         eyebrow="Help centre"
         title="Questions, answered."
         description="Practical answers about delivery, returns, natural fabrics and paying for your order. If yours is not here, our care team is a short note away."
-        image="/images/bedding-06.jpg"
+        image={siteImage(settings, "img.pageFaq")}
         imageAlt="Folded natural linen bedding"
       />
 

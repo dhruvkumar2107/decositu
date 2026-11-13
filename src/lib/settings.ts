@@ -1,4 +1,6 @@
+import { cache } from "react";
 import { prisma } from "@/lib/db";
+import { siteImageDefaults, type SiteImageKey } from "@/lib/site-images";
 
 const defaults: Record<string, string> = {
   heroEyebrow: "The considered home · Volume 01",
@@ -13,15 +15,28 @@ const defaults: Record<string, string> = {
   returnWindow: "7",
   demoNote:
     "Sample catalogue and pricing are shown for preview. No live payment is captured in demo mode.",
+  ...siteImageDefaults,
 };
 
-export async function getSettings() {
+export const getSettings = cache(async (): Promise<Record<string, string>> => {
   try {
     const rows = await prisma.setting.findMany();
-    return { ...defaults, ...Object.fromEntries(rows.map((row) => [row.key, row.value])) };
+    return {
+      ...defaults,
+      ...Object.fromEntries(rows.filter((row) => row.value).map((row) => [row.key, row.value])),
+    };
   } catch {
     return defaults;
   }
+});
+
+/** Resolve an admin-managed storefront image, falling back to the bundled default. */
+export function siteImage(settings: Record<string, string>, key: SiteImageKey) {
+  return settings[key] || siteImageDefaults[key];
+}
+
+export async function getSiteImage(key: SiteImageKey) {
+  return siteImage(await getSettings(), key);
 }
 
 export function isDemoMode() {

@@ -10,7 +10,7 @@ import {
   Truck,
 } from "lucide-react";
 import { prisma } from "@/lib/db";
-import { getSettings, shippingConfig } from "@/lib/settings";
+import { getSettings, shippingConfig, siteImage } from "@/lib/settings";
 import {
   getBestsellers,
   getCategories,
@@ -61,7 +61,7 @@ export default async function HomePage() {
     <>
       <section className="relative isolate flex min-h-[660px] items-end overflow-hidden bg-charcoal sm:min-h-[720px] lg:h-[calc(100svh-114px)] lg:max-h-[940px]">
         <Image
-          src="/images/hero-living.jpg"
+          src={siteImage(settings, "img.homeHero")}
           alt="A sunlit contemporary living room with layered natural textures"
           fill
           priority
@@ -291,7 +291,7 @@ export default async function HomePage() {
           <Reveal className="lg:col-span-7">
             <div className="relative min-h-[430px] overflow-hidden bg-cream sm:min-h-[560px] lg:min-h-[670px]">
               <Image
-                src="/images/campaign-bedding.jpg"
+                src={siteImage(settings, "img.homeBedding")}
                 alt="Layered neutral bedding with soft morning light"
                 fill
                 sizes="(max-width: 1024px) 100vw, 58vw"
@@ -393,7 +393,7 @@ export default async function HomePage() {
           <Reveal className="order-1 lg:order-2" delay={100}>
             <div className="relative min-h-[420px] sm:min-h-[560px] lg:h-full lg:min-h-[720px]">
               <Image
-                src="/images/campaign-curtains.jpg"
+                src={siteImage(settings, "img.homeCurtains")}
                 alt="Soft curtains diffusing natural light in a quiet room"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -415,7 +415,7 @@ export default async function HomePage() {
             <Reveal>
               <div className="relative min-h-[420px] sm:min-h-[540px] lg:h-full lg:min-h-[660px]">
                 <Image
-                  src="/images/dohar-02.jpg"
+                  src={siteImage(settings, "img.homeDohar")}
                   alt="A lightweight quilt layered on a bed"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
@@ -483,7 +483,7 @@ export default async function HomePage() {
             {bySlug.get("cushions") && (
               <Reveal className="md:col-span-4">
                 <Link href="/collections/cushions" className="group relative block h-[300px] overflow-hidden bg-cream md:h-full">
-                  <Image src="/images/cushions-01.jpg" alt="Textured cushion covers" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                  <Image src={siteImage(settings, "img.homeCushions")} alt="Textured cushion covers" fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal/55 to-transparent" />
                   <div className="absolute bottom-5 left-5 text-ivory">
                     <p className="eyebrow text-ivory/60">Soft accents</p>
@@ -495,7 +495,7 @@ export default async function HomePage() {
             {bySlug.get("rugs") && (
               <Reveal className="md:col-span-5" delay={70}>
                 <Link href="/collections/rugs" className="group relative block h-[300px] overflow-hidden bg-cream md:h-full">
-                  <Image src="/images/rugs-01.jpg" alt="Handwoven natural rug" fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                  <Image src={siteImage(settings, "img.homeRugs")} alt="Handwoven natural rug" fill sizes="(max-width: 768px) 100vw, 42vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal/55 to-transparent" />
                   <div className="absolute bottom-5 left-5 text-ivory">
                     <p className="eyebrow text-ivory/60">Underfoot</p>
@@ -506,7 +506,7 @@ export default async function HomePage() {
             )}
             <Reveal className="md:col-span-3" delay={140}>
               <Link href="/collections/sofa-covers" className="group relative block h-[300px] overflow-hidden bg-cream md:h-full">
-                <Image src="/images/sofa-01.jpg" alt="A soft neutral sofa cover" fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                <Image src={siteImage(settings, "img.homeSofa")} alt="A soft neutral sofa cover" fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal/55 to-transparent" />
                 <div className="absolute bottom-5 left-5 text-ivory">
                   <p className="eyebrow text-ivory/60">Easy layering</p>
@@ -548,19 +548,19 @@ export default async function HomePage() {
             {
               title: "The bedroom",
               text: "Quiet layers, softer light and nothing that asks for attention.",
-              image: "/images/room-bedroom.jpg",
+              image: siteImage(settings, "img.roomBedroom"),
               href: "/inspiration#bedroom",
             },
             {
               title: "The living room",
               text: "A place for long conversations, low light and an extra cushion.",
-              image: "/images/room-living.jpg",
+              image: siteImage(settings, "img.roomLiving"),
               href: "/inspiration#living-room",
             },
             {
               title: "The dining room",
               text: "Warm textures and a table that is always ready for one more.",
-              image: "/images/room-dining.jpg",
+              image: siteImage(settings, "img.roomDining"),
               href: "/inspiration#dining-room",
             },
           ].map((room, index) => (
@@ -591,7 +591,7 @@ export default async function HomePage() {
 
       <section className="relative flex min-h-[500px] items-center overflow-hidden bg-charcoal md:min-h-[600px]">
         <Image
-          src="/images/campaign-festive.jpg"
+          src={siteImage(settings, "img.homeFestive")}
           alt="A warm, celebratory living room styled with natural textures"
           fill
           sizes="100vw"
@@ -677,7 +677,7 @@ export default async function HomePage() {
         <div className="container-luxe grid items-stretch gap-0 bg-paper lg:grid-cols-2">
           <div className="relative min-h-[360px] lg:min-h-[560px]">
             <Image
-              src="/images/story-craft.jpg"
+              src={siteImage(settings, "img.story")}
               alt="Natural textures and considered details in a Decoritu home"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

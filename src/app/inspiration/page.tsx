@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { getSettings, siteImage } from "@/lib/settings";
+import type { SiteImageKey } from "@/lib/site-images";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -9,14 +11,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/inspiration" },
 };
 
-const rooms = [
+const roomData = [
   {
     id: "bedroom",
     chapter: "Chapter one",
     title: "The bedroom",
     subtitle: "Softness, layered slowly.",
-    image: "/images/room-bedroom.jpg",
-    secondary: "/images/bedding-07.jpg",
+    image: "img.roomBedroom",
+    secondary: "img.inspBedroomDetail",
     body: [
       "A bedroom does not need much. Good light, a bed dressed in something that feels lovely against the skin, and a surface beside it for the book you are actually reading.",
       "We like to begin with one colour and let texture do the rest: a washed cotton sheet, a linen dohar, a cushion with a little weight. Leave the floor mostly bare. Let the room stay quiet.",
@@ -33,8 +35,8 @@ const rooms = [
     chapter: "Chapter two",
     title: "The living room",
     subtitle: "A room that holds people.",
-    image: "/images/room-living.jpg",
-    secondary: "/images/cushions-03.jpg",
+    image: "img.roomLiving",
+    secondary: "img.inspLivingDetail",
     body: [
       "The living room is the room that has to work a little harder. It holds the everyday and the occasion: tea, conversation, a film, a late dinner that runs long.",
       "Start with a rug that grounds the seating. Add cushions in a mix of scales rather than a single matched set. A throw left within reach is an invitation. Nothing needs to be precious.",
@@ -51,8 +53,8 @@ const rooms = [
     chapter: "Chapter three",
     title: "The dining room",
     subtitle: "Everyday occasions.",
-    image: "/images/room-dining.jpg",
-    secondary: "/images/dining-03.jpg",
+    image: "img.roomDining",
+    secondary: "img.inspDiningDetail",
     body: [
       "A dining table is a generous thing. It asks for very little: a cloth that softens the surface, glassware you actually use, and light that falls low and warm.",
       "We prefer table linen in unbleached cotton and stonewashed tones, layered with simple ceramics. Keep the centre uncluttered. The best centrepiece is usually the people.",
@@ -64,7 +66,7 @@ const rooms = [
       { label: "Shop home décor", href: "/collections/home-decor" },
     ],
   },
-];
+] as const satisfies readonly { image: SiteImageKey; secondary: SiteImageKey; [key: string]: unknown }[];
 
 const notes = [
   {
@@ -85,12 +87,18 @@ const notes = [
   },
 ];
 
-export default function InspirationPage() {
+export default async function InspirationPage() {
+  const settings = await getSettings();
+  const rooms = roomData.map((room) => ({
+    ...room,
+    image: siteImage(settings, room.image),
+    secondary: siteImage(settings, room.secondary),
+  }));
   return (
     <>
       <section className="relative min-h-[68vh] overflow-hidden bg-charcoal text-ivory">
         <Image
-          src="/images/hero-living.jpg"
+          src={siteImage(settings, "img.inspirationHero")}
           alt="A warm living room layered with natural textiles"
           fill
           priority
@@ -225,7 +233,7 @@ export default function InspirationPage() {
             </div>
           </div>
           <div className="relative aspect-[4/3] overflow-hidden bg-ivory/10">
-            <Image src="/images/story-craft.jpg" alt="The hands and craft behind Decoritu textiles" fill sizes="(max-width: 1024px) 100vw, 40vw" className="object-cover" />
+            <Image src={siteImage(settings, "img.story")} alt="The hands and craft behind Decoritu textiles" fill sizes="(max-width: 1024px) 100vw, 40vw" className="object-cover" />
           </div>
         </div>
       </section>

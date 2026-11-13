@@ -6,12 +6,13 @@ import { Toaster } from "sonner";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
+import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { StoreProvider } from "@/components/providers/StoreProvider";
 import { getCurrentUser } from "@/lib/auth";
 import { getCategories } from "@/lib/products";
-import { getSettings, isDemoMode, shippingConfig } from "@/lib/settings";
+import { getSettings, isDemoMode, shippingConfig, siteImage } from "@/lib/settings";
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: {
     default: "Decoritu — Considered things for beautiful living",
@@ -47,6 +48,18 @@ export const metadata: Metadata = {
     follow: true,
   },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const shareImage = siteImage(await getSettings(), "img.socialShare");
+  return {
+    ...baseMetadata,
+    openGraph: {
+      ...baseMetadata.openGraph,
+      images: [{ url: shareImage, alt: "Decoritu — home furnishings" }],
+    },
+    twitter: { ...baseMetadata.twitter, images: [shareImage] },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -94,11 +107,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             user={user}
             shippingThreshold={shipping.threshold}
             returnWindow={Number(settings.returnWindow) || 7}
+            logoSrc={siteImage(settings, "img.logo")}
+            menuImage={siteImage(settings, "img.menuFeature")}
           />
           <main id="main-content">{children}</main>
           <Footer categories={footerCategories} settings={settings} demoMode={isDemoMode()} />
+          <WhatsAppButton />
           <Toaster
-            position="bottom-right"
+            position="bottom-left"
             toastOptions={{
               style: {
                 background: "#2b2a25",

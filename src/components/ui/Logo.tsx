@@ -1,11 +1,18 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
+export const DEFAULT_LOGO = "/images/logo.png";
+
 export function Logo({
+  src = DEFAULT_LOGO,
   light = false,
   compact = false,
   className,
 }: {
+  /** Logo image URL, managed from Admin → Site images. */
+  src?: string;
+  /** Placed on a dark background: the logo sits on a soft ivory plate so it stays legible. */
   light?: boolean;
   compact?: boolean;
   className?: string;
@@ -14,26 +21,24 @@ export function Logo({
     <Link
       href="/"
       aria-label="Decoritu home"
-      className={cn("group inline-flex items-center gap-2.5", className)}
+      className={cn(
+        "inline-flex items-center",
+        light && "rounded-sm bg-ivory px-4 py-3",
+        className,
+      )}
     >
-      <span
-        aria-hidden="true"
+      <Image
+        src={src || DEFAULT_LOGO}
+        alt="Decoritu — Walkin for New Ideas"
+        width={0}
+        height={0}
+        sizes="(max-width: 1024px) 160px, 220px"
+        priority={!light}
         className={cn(
-          "relative inline-flex h-5 w-5 items-center justify-center rounded-full border transition-colors",
-          light ? "border-ivory/50" : "border-ink/30",
+          "w-auto max-w-[220px] object-contain",
+          light ? "h-20" : compact ? "h-[50px]" : "h-[58px] lg:h-[64px]",
         )}
-      >
-        <span className={cn("h-1.5 w-1.5 rotate-45", light ? "bg-ivory" : "bg-olive")} />
-      </span>
-      <span
-        className={cn(
-          "font-display uppercase leading-none",
-          compact ? "text-[1.35rem] tracking-[0.18em]" : "text-[1.65rem] tracking-[0.21em] md:text-[1.8rem]",
-          light ? "text-ivory" : "text-ink",
-        )}
-      >
-        Decoritu
-      </span>
+      />
     </Link>
   );
 }

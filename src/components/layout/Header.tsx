@@ -42,11 +42,15 @@ export function Header({
   user,
   shippingThreshold,
   returnWindow,
+  logoSrc,
+  menuImage = "/images/dohar-02.jpg",
 }: {
   categories: NavCategory[];
   user: SessionUser | null;
   shippingThreshold: number;
   returnWindow: number;
+  logoSrc?: string;
+  menuImage?: string;
 }) {
   const pathname = usePathname();
   const { cartCount, wishlistCount, isReady } = useStore();
@@ -84,12 +88,12 @@ export function Header({
             <Menu size={21} strokeWidth={1.4} />
           </button>
           <div className="hidden lg:block">
-            <Logo />
+            <Logo src={logoSrc} />
           </div>
         </div>
 
         <div className="lg:hidden">
-          <Logo compact />
+          <Logo src={logoSrc} compact />
         </div>
 
         <nav className="hidden items-center justify-center gap-5 xl:gap-7 lg:flex" aria-label="Main navigation">
@@ -234,7 +238,7 @@ export function Header({
 
             <Link href="/collections/bestsellers" className="group relative min-h-[240px] overflow-hidden bg-cream">
               <Image
-                src="/images/dohar-02.jpg"
+                src={menuImage}
                 alt="Layered bedding in warm natural tones"
                 fill
                 sizes="300px"
@@ -262,7 +266,7 @@ export function Header({
           />
           <div className="animate-slide-in absolute inset-y-0 left-0 flex w-[90%] max-w-[390px] flex-col overflow-y-auto bg-ivory shadow-2xl">
             <div className="flex items-center justify-between border-b border-line px-5 py-5">
-              <Logo compact />
+              <Logo src={logoSrc} compact />
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}

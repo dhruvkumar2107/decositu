@@ -12,7 +12,8 @@ import {
   productSchema,
 } from "@/lib/validators";
 import type { ActionState } from "@/lib/action-state";
-import { slugify } from "@/lib/utils";
+import { parseImages, slugify } from "@/lib/utils";
+import { isValidImageUrl, siteImageDefaults, siteImageSlots } from "@/lib/site-images";
 
 function field(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -31,7 +32,18 @@ function rupees(value: string) {
 }
 
 function imageList(value: string) {
-  return [...new Set(value.split(/[\n,]+/).map((item) => item.trim()).filter(Boolean))];
+  // Newline-separated (commas are legal inside image CDN URLs). Legacy JSON arrays are accepted too.
+  const raw = value.trim().startsWith("[") ? parseImages(value) : value.split(/\r?\n+/);
+  const images = [...new Set(raw.map((item) => item.trim()).filter(Boolean))];
+  const invalid = images.find((image) => !isValidImageUrl(image));
+  if (invalid) throw new Error(`“${invalid.slice(0, 60)}” is not a valid image URL.`);
+  return images;
+}
+
+function optionalImage(formData: FormData, key: string) {
+  const value = field(formData, key);
+  if (value && !isValidImageUrl(value)) throw new Error("That image URL is not valid.");
+  return value;
 }
 
 function fail(error: unknown, fallback: string): ActionState {
@@ -45,6 +57,10 @@ function fail(error: unknown, fallback: string): ActionState {
     if (error.code === "P2003") {
       return { status: "error", message: "A linked record could not be found." };
     }
+  }
+  // Plain Errors are thrown deliberately in this file with admin-facing messages.
+  if (error instanceof Error && error.constructor === Error && error.message) {
+    return { status: "error", message: error.message };
   }
   console.error(fallback, error);
   return { status: "error", message: fallback };
@@ -70,11 +86,11 @@ export async function createProductAction(
   formData: FormData,
 ): Promise<ActionState> {
   await assertAdmin();
-  const images = imageList(field(formData, "images"));
   const stock = Number(field(formData, "stock"));
   let productId = "";
 
   try {
+    const images = imageList(field(formData, "images"));
     const parsed = productSchema.parse({
       name: field(formData, "name"),
       slug: field(formData, "slug"),
@@ -96,7 +112,7 @@ export async function createProductAction(
       active: checked(formData, "active"),
     });
 
-    if (!images.length) throw new Error("Add at least one image path.");
+    if (!images.length) throw new Error("Add at least one product image.");
     if (!Number.isInteger(stock) || stock < 0) throw new Error("Enter a valid stock quantity.");
 
     const size = field(formData, "size") || "Standard";
@@ -161,9 +177,9 @@ export async function updateProductAction(
 ): Promise<ActionState> {
   await assertAdmin();
   const id = field(formData, "id");
-  const images = imageList(field(formData, "images"));
 
   try {
+    const images = imageList(field(formData, "images"));
     const stock = await prisma.productVariant.aggregate({
       where: { productId: id, active: true },
       _sum: { stock: true },
@@ -189,7 +205,7 @@ export async function updateProductAction(
       active: checked(formData, "active"),
     });
 
-    if (!images.length) throw new Error("Add at least one image path.");
+    if (!images.length) throw new Error("Add at least one product image.");
 
     await prisma.product.update({
       where: { id },
@@ -253,7 +269,7 @@ export async function addVariantAction(
         price,
         compareAtPrice: rupees(field(formData, "compareAtPrice")),
         stock,
-        image: field(formData, "image") || imageList(product.images)[0] || null,
+        image: optionalImage(formData, "image") || imageList(product.images)[0] || null,
       },
     });
     await syncProductStock(productId);
@@ -288,7 +304,7 @@ export async function updateVariantAction(
         price: rupees(field(formData, "price")) ?? variant.price,
         compareAtPrice: rupees(field(formData, "compareAtPrice")),
         stock,
-        image: field(formData, "image") || null,
+        image: optionalImage(formData, "image") || null,
         active: checked(formData, "active"),
       },
     });
@@ -342,7 +358,7 @@ export async function createCategoryAction(
       name: field(formData, "name"),
       slug: field(formData, "slug"),
       description: field(formData, "description"),
-      image: field(formData, "image"),
+      image: optionalImage(formData, "image"),
       sortOrder: field(formData, "sortOrder") || 0,
     });
     await prisma.category.create({ data: parsed });
@@ -365,7 +381,7 @@ export async function updateCategoryAction(
       name: field(formData, "name"),
       slug: field(formData, "slug"),
       description: field(formData, "description"),
-      image: field(formData, "image"),
+      image: optionalImage(formData, "image"),
       sortOrder: field(formData, "sortOrder") || 0,
     });
     await prisma.category.update({
@@ -693,5 +709,29 @@ export async function updateSettingsAction(
     return { status: "success", message: "Store settings saved." };
   } catch (error) {
     return fail(error, "Unable to save the settings.");
+  }
+}
+
+export async function updateSiteImagesAction(
+  _state: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  await assertAdmin();
+  try {
+    const writes = siteImageSlots.map((slot) => {
+      const value = field(formData, slot.key) || siteImageDefaults[slot.key];
+      if (!isValidImageUrl(value)) throw new Error(`${slot.label}: that image URL is not valid.`);
+      return prisma.setting.upsert({
+        where: { key: slot.key },
+        update: { value },
+        create: { key: slot.key, value },
+      });
+    });
+    await prisma.$transaction(writes);
+    refreshStorefront();
+    revalidatePath("/admin/site-images");
+    return { status: "success", message: "Site images published." };
+  } catch (error) {
+    return fail(error, "Unable to save the site images.");
   }
 }

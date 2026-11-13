@@ -1,8 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { getSettings, siteImage } from "@/lib/settings";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const settings = await getSettings();
   return (
     <section className="container-luxe grid items-center gap-10 py-16 lg:grid-cols-[1fr_0.9fr] lg:gap-20 lg:py-24">
       <div>
@@ -27,7 +29,7 @@ export default function NotFound() {
       </div>
       <div className="relative aspect-[4/5] overflow-hidden bg-cream">
         <Image
-          src="/images/story-craft.jpg"
+          src={siteImage(settings, "img.story")}
           alt="A quiet moment in the Decoritu studio"
           fill
           priority

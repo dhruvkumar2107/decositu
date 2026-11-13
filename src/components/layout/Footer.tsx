@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Instagram, Mail, MapPin, Phone } from "lucide-react";
+import { Instagram, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { siteImage } from "@/lib/settings";
 import { NewsletterForm } from "@/components/layout/NewsletterForm";
-import { storeAddressText, storeInfo, storeMapUrl, telHref } from "@/lib/store-info";
+import { storeAddressText, storeInfo, storeMapUrl, telHref, whatsappHref } from "@/lib/store-info";
 
 type FooterCategory = {
   id: string;
@@ -26,7 +27,7 @@ export function Footer({
       <div className="container-luxe">
         <div className="grid gap-12 border-b border-ivory/12 py-16 lg:grid-cols-[1.3fr_0.8fr_0.8fr_1.1fr] lg:gap-16 lg:py-20">
           <div>
-            <Logo light />
+            <Logo light src={siteImage(settings, "img.logo")} />
             <p className="mt-6 max-w-xs font-display text-3xl leading-[1.05] text-ivory/90">
               {storeInfo.tagline}.
             </p>
@@ -127,6 +128,12 @@ export function Footer({
                     </span>
                   ))}
                 </span>
+              </p>
+              <p className="flex items-start gap-2.5">
+                <MessageCircle size={13} className="mt-0.5 shrink-0" />
+                <a href={whatsappHref()} target="_blank" rel="noopener noreferrer" className="hover:text-ivory">
+                  WhatsApp us · +91 99864 79525
+                </a>
               </p>
               <p className="flex items-start gap-2.5">
                 <MapPin size={13} className="mt-0.5 shrink-0" />

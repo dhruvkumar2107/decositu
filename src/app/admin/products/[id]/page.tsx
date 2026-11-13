@@ -5,6 +5,7 @@ import { ArrowLeft, ChevronDown, Eye, PackagePlus, Plus, Trash2 } from "lucide-r
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { formatPrice, parseImages } from "@/lib/utils";
+import { ImageField } from "@/components/admin/ImageField";
 import { AdminActionForm } from "@/components/admin/AdminActionForm";
 import { ProductFields } from "@/components/admin/ProductFields";
 import { ConfirmButton } from "@/components/admin/ConfirmButton";
@@ -147,8 +148,7 @@ export default async function AdminEditProductPage({
                   </div>
                 </div>
                 <div className="mt-3">
-                  <label className="label">Image path</label>
-                  <input name="image" placeholder="/images/example.jpg" className="input" />
+                  <ImageField name="image" label="Variant image (optional)" hint="Leave empty to use the main product image." />
                 </div>
               </AdminActionForm>
             </div>
@@ -204,8 +204,7 @@ export default async function AdminEditProductPage({
                     </div>
                   </div>
                   <div className="mt-3">
-                    <label className="label">Image path</label>
-                    <input name="image" defaultValue={variant.image ?? ""} className="input" />
+                    <ImageField name="image" label="Variant image (optional)" defaultValue={variant.image ?? ""} />
                   </div>
                   <label className="mt-3 flex items-center gap-2 text-xs">
                     <input type="checkbox" name="active" defaultChecked={variant.active} className="h-3.5 w-3.5 accent-olive" />

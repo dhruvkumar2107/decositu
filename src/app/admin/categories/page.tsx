@@ -4,6 +4,7 @@ import { ChevronDown, Plus } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { AdminActionForm } from "@/components/admin/AdminActionForm";
+import { ImageField } from "@/components/admin/ImageField";
 import { createCategoryAction, toggleCategoryAction, updateCategoryAction } from "@/app/admin/actions";
 import { cn } from "@/lib/utils";
 
@@ -114,11 +115,8 @@ function CategoryFields({
         <label className="label">Description</label>
         <textarea name="description" required minLength={5} rows={2} defaultValue={category?.description} className="textarea resize-y" />
       </div>
-      <div className="grid gap-3 sm:grid-cols-[1fr_120px]">
-        <div>
-          <label className="label">Image path</label>
-          <input name="image" required defaultValue={category?.image} placeholder="/images/bedding-01.jpg" className="input" />
-        </div>
+      <ImageField name="image" label="Category image" required defaultValue={category?.image ?? ""} />
+      <div className="max-w-[160px]">
         <div>
           <label className="label">Sort order</label>
           <input name="sortOrder" type="number" min="0" max="999" defaultValue={category?.sortOrder ?? 0} className="input" />

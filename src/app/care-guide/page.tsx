@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Droplets, Sun, Wind } from "lucide-react";
 import { ContentHeader } from "@/components/content/ContentHeader";
+import { getSettings, siteImage } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Care guide",
@@ -55,14 +56,15 @@ const materials = [
   },
 ];
 
-export default function CareGuidePage() {
+export default async function CareGuidePage() {
+  const settings = await getSettings();
   return (
     <>
       <ContentHeader
         eyebrow="The care edit"
         title="Better with time."
         description="Natural materials are not meant to stay untouched. With a little care, cotton softens, linen relaxes and brass deepens into a warm patina. Here is how we look after ours."
-        image="/images/bedding-04.jpg"
+        image={siteImage(settings, "img.pageCare")}
         imageAlt="Textured natural bedding in warm light"
       />
 
@@ -130,7 +132,7 @@ export default function CareGuidePage() {
             <Link href="/contact" className="btn btn-light mt-6">Ask our care team</Link>
           </div>
           <div className="relative h-[260px] overflow-hidden bg-ivory/10 sm:h-[300px]">
-            <Image src="/images/story-craft.jpg" alt="Hand finishing a natural textile" fill sizes="(max-width: 1024px) 100vw, 40vw" className="object-cover" />
+            <Image src={siteImage(settings, "img.story")} alt="Hand finishing a natural textile" fill sizes="(max-width: 1024px) 100vw, 40vw" className="object-cover" />
             <div className="absolute inset-0 bg-charcoal/15" />
           </div>
         </div>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, Clock3, Package, RotateCcw, Truck } from "lucide-react";
 import { ContentHeader } from "@/components/content/ContentHeader";
-import { getSettings, shippingConfig } from "@/lib/settings";
+import { getSettings, shippingConfig, siteImage } from "@/lib/settings";
 import { formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default async function ShippingReturnsPage() {
         eyebrow="Delivery & aftercare"
         title="From our hands to your home."
         description="Everything you need to know about dispatch, delivery, cancellations and returns — written plainly, without the small print surprises."
-        image="/images/decor-06.jpg"
+        image={siteImage(settings, "img.pageShipping")}
         imageAlt="A considered home interior styled with natural textures"
       />
 

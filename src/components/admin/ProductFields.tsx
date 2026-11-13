@@ -1,3 +1,5 @@
+import { ImageListField } from "@/components/admin/ImageListField";
+
 export type AdminProduct = {
   id: string;
   name: string;
@@ -164,22 +166,7 @@ export function ProductFields({
         )}
       </div>
 
-      <div>
-        <label htmlFor="product-images" className="label">Image paths or URLs</label>
-        <textarea
-          id="product-images"
-          name="images"
-          required
-          rows={4}
-          defaultValue={product?.images.join("\n") ?? ""}
-          placeholder={"/images/bedding-01.jpg\n/images/bedding-02.jpg"}
-          className="textarea resize-y font-mono text-xs"
-        />
-        <p className="mt-1.5 text-[0.6rem] leading-5 text-muted">
-          One image per line. Use an existing path under <code>/images</code> or a full HTTPS image URL.
-          The first image is the primary product image.
-        </p>
-      </div>
+      <ImageListField name="images" label="Product images" defaultValue={product?.images ?? []} />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>

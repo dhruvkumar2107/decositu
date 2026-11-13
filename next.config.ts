@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [360, 480, 640, 768, 1024, 1280, 1536, 1920, 2560],
     imageSizes: [64, 96, 128, 256, 384],
+    // Admins may paste external image URLs (e.g. from a CDN or supplier site).
+    remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
   async headers() {
     return [

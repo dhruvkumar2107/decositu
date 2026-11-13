@@ -1,14 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Check } from "lucide-react";
+import { getSettings, siteImage } from "@/lib/settings";
 
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+export default async function AuthLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getSettings();
   return (
     <section className="container-luxe py-8 md:py-14">
       <div className="grid overflow-hidden border border-line bg-paper lg:min-h-[680px] lg:grid-cols-[0.9fr_1.1fr]">
         <aside className="relative hidden min-h-[300px] overflow-hidden bg-charcoal lg:block">
           <Image
-            src="/images/campaign-bedding.jpg"
+            src={siteImage(settings, "img.authSide")}
             alt="A softly layered Decoritu bedroom"
             fill
             priority
